@@ -4,5 +4,8 @@
 /src/node_modules
 /node_modules
 
+<<<<<<< HEAD
 #build
+=======
+>>>>>>> c11f8a4febc2fcaf0c1019d9cca4a42bab8b854f
 /build
