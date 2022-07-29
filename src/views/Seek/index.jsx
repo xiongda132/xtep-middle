@@ -19,7 +19,7 @@ import axios from "axios";
 
 const Seek = () => {
   const columns = [{ title: "EPC", dataIndex: "EPCName" }];
-  const [tableData, setTableData] = useState([{ EPCName: "123456789" }]);
+  const [tableData, setTableData] = useState([]);
   const [uploadModalVisible, setUploadModalVisible] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
