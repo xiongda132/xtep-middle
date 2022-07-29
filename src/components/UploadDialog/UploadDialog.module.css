@@ -1,0 +1,28 @@
+.inputfile {
+  width: 100%;
+  height: 200px;
+  border: 1px dashed #ff6600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.actionArea {
+  width: 100%;
+  height: 200px;
+  border: 1px solid #ff6600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+.inputfileDescText {
+  font-size: 20px;
+}

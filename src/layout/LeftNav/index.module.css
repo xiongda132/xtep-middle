@@ -1,0 +1,20 @@
+.log {
+  background-color: red;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 64px;
+  background-color: #f60;
+  color: white;
+  font-size: 18px;
+}
+
+.LeftNav {
+  height: calc(100vh - 64px);
+  background-color: #fff;
+}
+.inventory, .seek {
+  height: 40px;
+  line-height: 40x !important;
+  padding-left: 60px !important;
+}
