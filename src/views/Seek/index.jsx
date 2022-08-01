@@ -82,6 +82,7 @@ const Seek = () => {
             data: [],
             template: template,
             hasPromptTitle: true,
+            // titleMessage: ["EPC长度必须是24"],
           },
           `商品数据导入模板`
         );
@@ -124,7 +125,7 @@ const Seek = () => {
             alignItems: "center",
           }}
         >
-          <div>查找管理</div>
+          <div>查找导出</div>
           <Dropdown overlay={menu}>
             <Button type="primay">导入/导出</Button>
           </Dropdown>
