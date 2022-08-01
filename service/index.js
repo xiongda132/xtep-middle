@@ -16,7 +16,8 @@ app.post('/goods/select/in', async (req, res) => {
     try {
         let array = req.body;
         if (!array || !array.length || array.length < 1) {
-            res.status(500).send({ code: -1, message: 'epc为空' });
+            throw ({ code: -1, message: 'epc为空' });
+
         }
         let string = '';
         for (let i = 0; i < array.length - 1; i++) {
@@ -27,11 +28,11 @@ app.post('/goods/select/in', async (req, res) => {
             if (err) {
                 throw err;
             } else {
-                res.status(200).send({ code: 1, message: 'success' })
+                res.send({ code: 1, message: 'success' });
             }
         })
     } catch (err) {
-        res.status(500).send('请求失败');
+        res.send({ code: -1, message: err.message });
     }
 
 })
@@ -41,7 +42,7 @@ app.get('/goods/select/out', async (req, res) => {
     try {
         fs.access('epc/epc.txt', fs.constants.F_OK, (err) => {
             if (err) {
-                res.status(500).send({ code: -1, message: '请用户先提供epc文件' })
+                res.send({ code: 1, message: 'success', data: [] })
             } else {
                 let buffer = fs.readFileSync('epc/epc.txt');
                 let string = buffer.toString();
@@ -52,7 +53,7 @@ app.get('/goods/select/out', async (req, res) => {
             }
         })
     } catch (err) {
-        res.status(500).send('请求失败');
+        res.send({ code: -1, message: '请求失败' });
     }
 })
 
@@ -66,11 +67,11 @@ app.post('/goods/check/in', async (req, res) => {
             if (err) {
                 throw err;
             } else {
-                res.status(200).send({ code: 1, message: 'success' });
+                res.send({ code: 1, message: 'success' });
             }
         })
     } catch (err) {
-        res.status(500).send('请求失败');
+        res.send({ code: -1, message: '请求失败' });
     }
 })
 
@@ -81,13 +82,10 @@ app.get('/goods/check/out', async (req, res) => {
         let fileName = query.fileName;
         let buffer = fs.readFileSync('check/' + fileName + '.txt');
         let string = buffer.toString();
-        console.log(string)
-        let array = JSON.parse(string)
-        console.log(array)
+        let array = string.split('\n');
         res.send({ code: 1, message: 'success', data: array });
     } catch (err) {
-        console.log(err)
-        res.status(500).send('请求失败');
+        res.send({ code: -1, message: '导出文件失败' });
     }
 })
 
@@ -103,7 +101,7 @@ app.get('/goods/check/getAll', async (req, res) => {
         array = array.reverse();
         res.send({ code: 1, message: 'success', data: array });
     } catch (err) {
-        res.status(500).send('请求失败');
+        res.send({ code: -1, message: '请求失败' });
     }
 })
 
@@ -127,7 +125,7 @@ app.post('/goods/check/delete', async (req, res) => {
         }
         res.send({ code: 1, message: 'success' })
     } catch (err) {
-        if (res.statusCode != 408) { res.status(500).send(err.message); }
+        if (res.statusCode != 408) { res.send({ code: -1, message: err.message }); }
 
     }
 })
