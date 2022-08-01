@@ -81,7 +81,9 @@ app.get('/goods/check/out', async (req, res) => {
         let fileName = query.fileName;
         let buffer = fs.readFileSync('check/' + fileName + '.txt');
         let string = buffer.toString();
-        let array = string.split('\n');
+        console.log(string)
+        let array = JSON.parse(string)
+        console.log(array)
         res.send({ code: 1, message: 'success', data: array });
     } catch (err) {
         console.log(err)
