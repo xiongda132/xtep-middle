@@ -11,6 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+//epc文件导入
 app.post('/goods/select/in', async (req, res) => {
     try {
         let array = req.body;
@@ -35,6 +36,7 @@ app.post('/goods/select/in', async (req, res) => {
 
 })
 
+//epc文件导出
 app.get('/goods/select/out', async (req, res) => {
     try {
         fs.access('epc/epc.txt', fs.constants.F_OK, (err) => {
@@ -54,6 +56,7 @@ app.get('/goods/select/out', async (req, res) => {
     }
 })
 
+//盘点文件导入
 app.post('/goods/check/in', async (req, res) => {
     try {
         let json = req.body;
@@ -71,21 +74,22 @@ app.post('/goods/check/in', async (req, res) => {
     }
 })
 
-
+//盘点文件导出
 app.get('/goods/check/out', async (req, res) => {
     try {
         let query = req.query;
         let fileName = query.fileName;
         let buffer = fs.readFileSync('check/' + fileName + '.txt');
         let string = buffer.toString();
-        let json = JSON.parse(string);
-        res.send({ code: 1, message: 'success', data: json });
+        let array = string.split('\n');
+        res.send({ code: 1, message: 'success', data: array });
     } catch (err) {
+        console.log(err)
         res.status(500).send('请求失败');
     }
 })
 
-
+//获取所有盘点文件名称
 app.get('/goods/check/getAll', async (req, res) => {
     try {
         let array = fs.readdirSync('check/');
@@ -94,9 +98,35 @@ app.get('/goods/check/getAll', async (req, res) => {
             let test = string.split('.');
             array[i] = test[0];
         }
+        array = array.reverse();
         res.send({ code: 1, message: 'success', data: array });
     } catch (err) {
         res.status(500).send('请求失败');
+    }
+})
+
+//删除盘点文件
+app.post('/goods/check/delete', async (req, res) => {
+    try {
+        let deleteList = req.body;
+        let array = fs.readdirSync('check/');
+        if (!deleteList || deleteList.length <= 0) {
+            throw { message: "删除列表不能为空" }
+        }
+        for (let a = 0; a < deleteList.length; a++) {
+            if (array.indexOf(deleteList[a] + '.txt') == -1) {
+                throw { message: deleteList[a] + "文件查找失败，删除失败" }
+            }
+        }
+        for (let i = 0; i < deleteList.length; i++) {
+            fs.unlinkSync('check/' + deleteList[i] + '.txt', (err) => {
+                if (err) throw { message: '删除' + deleteList[i] + '文件时失败' };
+            });
+        }
+        res.send({ code: 1, message: 'success' })
+    } catch (err) {
+        if (res.statusCode != 408) { res.status(500).send(err.message); }
+
     }
 })
 
