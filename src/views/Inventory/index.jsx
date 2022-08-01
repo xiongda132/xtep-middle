@@ -23,7 +23,7 @@ import { matchSorter } from "match-sorter";
 // import dayjs from dayjs;
 
 const Inventory = () => {
-  const [tableData, setTableData] = useState([{ EPCName: "123", time: "567" }]);
+  const [tableData, setTableData] = useState([]);
   const [uploadModalVisible, setUploadModalVisible] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
