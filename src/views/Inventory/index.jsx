@@ -53,8 +53,14 @@ const Inventory = () => {
     // const { data: res } = await axios.get(
     //     `http://localhost:8887/goods/check/out?fileName=${Id}`
     //   );
+    // if (!res) {
+    //   notification.error({
+    //     message: "导出失败",
+    //     description: '文件导出失败',
+    //   });
+    // }
     const { data } = res;
-    const newData = data.map((item) => ({ EPCName: item }));
+    const newData = data?.map((item) => ({ EPCName: item })) || []
     if (res.code === 1) {
       XlsxWorker.downExcel(
         {
@@ -75,7 +81,10 @@ const Inventory = () => {
   };
 
   const delConfirm = async (id, cb) => {
-    const res = await axios.post('http://192.168.50.206:8887/goods/check/delete', id)
+    const res = await axios.post(
+      "http://192.168.50.206:8887/goods/check/delete",
+      id
+    );
     // const res = await axios.post('http://localhost:8887/goods/check/delete', id)
     if (res.status === 200) {
       message.success("删除用户成功");
@@ -105,7 +114,7 @@ const Inventory = () => {
           <div>盘点管理</div>
           <Space>
             <StatePopConfirm
-              title="确认删除此用户？"
+              title="确认删除吗？"
               onConfirm={delConfirm.bind(null, selectedRowKeys, () => {
                 refreshData();
                 setSelectedRowKeys([]);
@@ -113,11 +122,7 @@ const Inventory = () => {
               okText="删除"
               cancelText="取消"
             >
-              <Button
-                disabled={!selectedRowKeys.length}
-                type="primary"
-                danger
-              >
+              <Button disabled={!selectedRowKeys.length} type="primary" danger>
                 删除
               </Button>
             </StatePopConfirm>

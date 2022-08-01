@@ -9,7 +9,7 @@ const LeftNav = (props) => {
 
   const items = [
     { label: "盘点管理", key: "inventory", icon: <BarChartOutlined /> },
-    { label: "查找管理", key: "seek", icon: <AppstoreOutlined /> },
+    { label: "查找导出", key: "seek", icon: <AppstoreOutlined /> },
   ];
   const onClick = (e) => {
     switch (e.key) {
