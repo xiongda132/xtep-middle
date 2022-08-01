@@ -21,12 +21,12 @@ const Inventory = () => {
 
   const refreshData = useCallback(async () => {
     setTableLoading(true);
-    const { data: res } = await axios.get(
-      "http://192.168.50.206:8887/goods/check/getAll"
-    );
     // const { data: res } = await axios.get(
-    //     "http://localhost:8887/goods/check/getAll"
-    //   );
+    //   "http://192.168.50.206:8887/goods/check/getAll"
+    // );
+    const { data: res } = await axios.get(
+        "http://localhost:8887/goods/check/getAll"
+      );
     setTableLoading(false);
     if (res.code === 1) {
       const data =
@@ -47,12 +47,12 @@ const Inventory = () => {
   }, []);
 
   const handleExport = async (Id, cb) => {
-    const { data: res } = await axios.get(
-      `http://192.168.50.206:8887/goods/check/out?fileName=${Id}`
-    );
     // const { data: res } = await axios.get(
-    //     `http://localhost:8887/goods/check/out?fileName=${Id}`
-    //   );
+    //   `http://192.168.50.206:8887/goods/check/out?fileName=${Id}`
+    // );
+    const { data: res } = await axios.get(
+        `http://localhost:8887/goods/check/out?fileName=${Id}`
+      );
     // if (!res) {
     //   notification.error({
     //     message: "导出失败",

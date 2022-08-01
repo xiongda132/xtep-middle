@@ -30,12 +30,12 @@ const Seek = () => {
 
   const refreshData = useCallback(async () => {
     setTableLoading(true);
-    const { data: res } = await axios.get(
-      "http://192.168.50.206:8887/goods/select/out"
-    );
     // const { data: res } = await axios.get(
-    //     "http://localhost:8887/goods/select/out"
-    //   );
+    //   "http://192.168.50.206:8887/goods/select/out"
+    // );
+    const { data: res } = await axios.get(
+        "http://localhost:8887/goods/select/out"
+      );
     setTableLoading(false);
     if (res.code === 1) {
       const data =
@@ -52,14 +52,14 @@ const Seek = () => {
 
   const handleImportData = useCallback(async (data, modelValue, callback) => {
     const newData = data.map((item) => item.EPCName);
-    const { data: res } = await axios.post(
-      "http://192.168.50.206:8887/goods/select/in",
-      newData
-    );
     // const { data: res } = await axios.post(
-    //   "http://localhost:8887/goods/select/in",
+    //   "http://192.168.50.206:8887/goods/select/in",
     //   newData
     // );
+    const { data: res } = await axios.post(
+      "http://localhost:8887/goods/select/in",
+      newData
+    );
     if (res.code === 1) {
       callback();
       refreshData();
