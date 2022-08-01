@@ -66,7 +66,7 @@ const Inventory = () => {
         {
           data: newData,
           template: template,
-          hasPromptTitle: false,
+          hasPromptTitle: true,
         },
         `EPC数据`
       );
