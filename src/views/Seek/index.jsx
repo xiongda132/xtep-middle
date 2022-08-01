@@ -111,7 +111,9 @@ const Seek = () => {
       ]}
     />
   );
-
+  useEffect(() => {
+    refreshData();
+  }, []);
   return (
     <div>
       <Card bodyStyle={{ padding: "18px", backgroundColor: "white" }}>

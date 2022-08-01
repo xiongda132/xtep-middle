@@ -1,45 +1,39 @@
 import { Menu } from "antd";
 import { useState } from "react";
 import styles from "./index.module.css";
-import { Link } from "react-router-dom";
-
-const LeftNav = () => {
+import { Link, withRouter } from "react-router-dom";
+import { BarChartOutlined, AppstoreOutlined } from "@ant-design/icons";
+const LeftNav = (props) => {
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
 
-  const handleMenuOpenChange = (openKeys) => {
-    setOpenKeys(openKeys);
+  const items = [
+    { label: "盘点管理", key: "inventory", icon: <BarChartOutlined /> },
+    { label: "查找管理", key: "seek", icon: <AppstoreOutlined /> },
+  ];
+  const onClick = (e) => {
+    switch (e.key) {
+      case "inventory":
+        return props.history.push("/inventory");
+      case "seek":
+        return props.history.push("/seek");
+      default:
+        return;
+    }
   };
+
   return (
     <div className={styles.LeftNav}>
       <Menu
+        onClick={onClick}
         theme="light"
-        onOpenChange={handleMenuOpenChange}
-        selectedKeys={selectedKeys}
+        defaultSelectedKeys={["inventory"]}
         openKeys={openKeys}
         mode="inline"
-      >
-        <Menu.Item
-          key="1"
-          className={styles.inventory}
-          style={{ lineHeight: "40px" }}
-        >
-          <Link to="/inventory" style={{ textDecoration: "none" }}>
-            <span>盘点管理</span>
-          </Link>
-        </Menu.Item>
-        <Menu.Item
-          key="2"
-          className={styles.seek}
-          style={{ lineHeight: "40px" }}
-        >
-          <Link to="/seek" style={{ textDecoration: "none" }}>
-            <span>查找管理</span>
-          </Link>
-        </Menu.Item>
-      </Menu>
+        items={items}
+      ></Menu>
     </div>
   );
 };
 
-export default LeftNav;
+export default withRouter(LeftNav);

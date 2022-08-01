@@ -1,44 +1,16 @@
-import {
-  Card,
-  Table,
-  Dropdown,
-  Button,
-  Menu,
-  notification,
-  message,
-  Input,
-  Form,
-} from "antd";
+import { Card, Table, Button, notification, message, Space } from "antd";
 import { useState, useEffect, useRef, useCallback } from "react";
-import {
-  DownOutlined,
-  UploadOutlined,
-  DownloadOutlined,
-} from "@ant-design/icons";
-import UploadDialog from "../../components/UploadDialog";
 import XlsxWorker from "xlsx-worker";
 import axios from "axios";
-import { matchSorter } from "match-sorter";
-
-// import dayjs from dayjs;
+import { StatePopConfirm } from "../../components";
 
 const Inventory = () => {
   const [tableData, setTableData] = useState([]);
-  const [uploadModalVisible, setUploadModalVisible] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-  const [totalCount, setTotalCount] = useState(0);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const searchFormRef = useRef(null);
   const tableDataRef = useRef([]);
 
-  const onSearch = ({ searchText }) => {
-    if (searchText) {
-      setTableData(matchSorter(tableData, searchText, { keys: ["EPCName"] }));
-      return;
-    }
-    setTableData(tableDataRef.current);
-  };
   const columns = [
     { title: "单号", dataIndex: "EPCName", width: "50%" },
     { title: "日期", dataIndex: "time", width: "50%" },
@@ -66,7 +38,6 @@ const Inventory = () => {
         })) ?? [];
       setTableData(data);
       tableDataRef.current = data;
-      setTotalCount(res.total);
     } else {
       notification.error({
         message: "请求数据失败",
@@ -83,7 +54,7 @@ const Inventory = () => {
     //     `http://localhost:8887/goods/check/out?fileName=${Id}`
     //   );
     const { data } = res;
-    const newData = data.split("\r\n").map((item) => ({ EPCName: item }));
+    const newData = data.map((item) => ({ EPCName: item }));
     if (res.code === 1) {
       XlsxWorker.downExcel(
         {
@@ -98,6 +69,20 @@ const Inventory = () => {
     } else {
       notification.error({
         message: "导出失败",
+        description: res.message,
+      });
+    }
+  };
+
+  const delConfirm = async (id, cb) => {
+    const res = await axios.post('http://192.168.50.206:8887/goods/check/delete', id)
+    // const res = await axios.post('http://localhost:8887/goods/check/delete', id)
+    if (res.status === 200) {
+      message.success("删除用户成功");
+      cb();
+    } else {
+      notification.error({
+        message: "删除用户失败",
         description: res.message,
       });
     }
@@ -118,18 +103,37 @@ const Inventory = () => {
           }}
         >
           <div>盘点管理</div>
-          <Button
-            disabled={selectedRowKeys.length !== 1}
-            type="primay"
-            onClick={() =>
-              handleExport(selectedRowKeys[0], () => {
+          <Space>
+            <StatePopConfirm
+              title="确认删除此用户？"
+              onConfirm={delConfirm.bind(null, selectedRowKeys, () => {
                 refreshData();
                 setSelectedRowKeys([]);
-              })
-            }
-          >
-            导出
-          </Button>
+              })}
+              okText="删除"
+              cancelText="取消"
+            >
+              <Button
+                disabled={!selectedRowKeys.length}
+                type="primary"
+                danger
+              >
+                删除
+              </Button>
+            </StatePopConfirm>
+            <Button
+              disabled={selectedRowKeys.length !== 1}
+              type="primary"
+              onClick={() =>
+                handleExport(selectedRowKeys[0], () => {
+                  refreshData();
+                  setSelectedRowKeys([]);
+                })
+              }
+            >
+              导出
+            </Button>
+          </Space>
         </div>
       </Card>
       <Card
@@ -140,33 +144,9 @@ const Inventory = () => {
           marginTop: "20px",
         }}
       >
-        <Form
-          ref={(r) => (searchFormRef.current = r)}
-          name="search_form"
-          layout="inline"
-          onFinish={onSearch}
-        >
-          <Form.Item name="searchText">
-            <Input placeholder="请输入单号" />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              查询
-            </Button>
-          </Form.Item>
-          <Form.Item>
-            <Button
-              onClick={() => {
-                searchFormRef.current.resetFields();
-                setTableData(tableDataRef.current);
-              }}
-            >
-              重置
-            </Button>
-          </Form.Item>
-        </Form>
-        <div style={{ marginTop: "20px" }}>
+        <div>
           <Table
+            loading={tableLoading}
             columns={columns}
             dataSource={tableData}
             bordered
