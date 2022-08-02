@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Popconfirm } from "antd";
+import { Popconfirm, notification } from "antd";
 
 const StatePopConfirm = ({ children, onConfirm, ...restProps }) => {
   const [visible, setVisible] = useState(false);
@@ -13,7 +13,16 @@ const StatePopConfirm = ({ children, onConfirm, ...restProps }) => {
       onCancel={() => setVisible(false)}
       onConfirm={async () => {
         setLoading(true);
-        await onConfirm();
+        try {
+          await onConfirm();
+        } catch (e) {
+          notification.error({
+            message: "失败",
+            description: "删除数据失败",
+          });
+          setLoading(false);
+          setVisible(false);
+        }
         setLoading(false);
         setVisible(false);
       }}

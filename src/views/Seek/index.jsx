@@ -30,36 +30,32 @@ const Seek = () => {
 
   const refreshData = useCallback(async () => {
     setTableLoading(true);
-    // const { data: res } = await axios.get(
-    //   "http://192.168.50.206:8887/goods/select/out"
-    // );
-    const { data: res } = await axios.get(
-        "http://localhost:8887/goods/select/out"
-      );
-    setTableLoading(false);
-    if (res.code === 1) {
-      const data =
-        res?.data.map((v, idx) => ({ ...v, id: idx + 1, EPCName: v })) ?? [];
-      setTableData(data);
-      setTotalCount(res.total);
-    } else {
+    try {
+      const { data: res } = await axios.get("/goods/select/out");
+      setTableLoading(false);
+      if (res.code === 1) {
+        const data =
+          res?.data.map((v, idx) => ({ ...v, id: idx + 1, EPCName: v })) ?? [];
+        setTableData(data);
+        setTotalCount(res.total);
+      } else {
+        notification.error({
+          message: "请求数据失败",
+          description: res.message,
+        });
+      }
+    } catch (e) {
+      setTableLoading(false);
       notification.error({
-        message: "请求数据失败",
-        description: res.message,
+        message: "失败",
+        description: "请求数据错误",
       });
     }
   }, []);
 
   const handleImportData = useCallback(async (data, modelValue, callback) => {
     const newData = data.map((item) => item.EPCName);
-    // const { data: res } = await axios.post(
-    //   "http://192.168.50.206:8887/goods/select/in",
-    //   newData
-    // );
-    const { data: res } = await axios.post(
-      "http://localhost:8887/goods/select/in",
-      newData
-    );
+    const { data: res } = await axios.post("goods/select/in", newData);
     if (res.code === 1) {
       callback();
       refreshData();
@@ -147,6 +143,7 @@ const Seek = () => {
       >
         <div>
           <Table
+            loading={tableLoading}
             columns={columns}
             dataSource={tableData}
             bordered

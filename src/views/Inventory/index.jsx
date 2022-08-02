@@ -10,7 +10,6 @@ const Inventory = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const tableDataRef = useRef([]);
-
   const columns = [
     { title: "单号", dataIndex: "EPCName", width: "50%" },
     { title: "日期", dataIndex: "time", width: "50%" },
@@ -21,46 +20,42 @@ const Inventory = () => {
 
   const refreshData = useCallback(async () => {
     setTableLoading(true);
-    // const { data: res } = await axios.get(
-    //   "http://192.168.50.206:8887/goods/check/getAll"
-    // );
-    const { data: res } = await axios.get(
-        "http://localhost:8887/goods/check/getAll"
+    try {
+      const { data: res } = await axios.get(
+        "/goods/check/getAll"
       );
-    setTableLoading(false);
-    if (res.code === 1) {
-      const data =
-        res?.data.map((v, idx) => ({
-          ...v,
-          id: idx + 1,
-          EPCName: v,
-          time: new Date(parseInt(v)).toLocaleString(),
-        })) ?? [];
-      setTableData(data);
-      tableDataRef.current = data;
-    } else {
+      setTableLoading(false);
+      if (res.code === 1) {
+        const data =
+          res?.data.map((v, idx) => ({
+            ...v,
+            id: idx + 1,
+            EPCName: v,
+            time: new Date(parseInt(v)).toLocaleString(),
+          })) ?? [];
+        setTableData(data);
+        tableDataRef.current = data;
+      } else {
+        notification.error({
+          message: "请求数据失败",
+          description: res.message,
+        });
+      }
+    } catch (e) {
+      setTableLoading(false);
       notification.error({
-        message: "请求数据失败",
-        description: res.message,
+        message: "失败",
+        description: "请求数据错误",
       });
     }
   }, []);
 
   const handleExport = async (Id, cb) => {
-    // const { data: res } = await axios.get(
-    //   `http://192.168.50.206:8887/goods/check/out?fileName=${Id}`
-    // );
     const { data: res } = await axios.get(
-        `http://localhost:8887/goods/check/out?fileName=${Id}`
-      );
-    // if (!res) {
-    //   notification.error({
-    //     message: "导出失败",
-    //     description: '文件导出失败',
-    //   });
-    // }
+      `/goods/check/out?fileName=${Id}`
+    );
     const { data } = res;
-    const newData = data?.map((item) => ({ EPCName: item })) || []
+    const newData = data?.map((item) => ({ EPCName: item })) || [];
     if (res.code === 1) {
       XlsxWorker.downExcel(
         {
@@ -81,12 +76,11 @@ const Inventory = () => {
   };
 
   const delConfirm = async (id, cb) => {
-    // const res = await axios.post(
-    //   "http://192.168.50.206:8887/goods/check/delete",
-    //   id
-    // );
-    const res = await axios.post('http://localhost:8887/goods/check/delete', id)
-    if (res.status === 200) {
+    const { data: res } = await axios.post(
+      "/goods/check/delete",
+      id
+    );
+    if (res.code === 1) {
       message.success("删除用户成功");
       cb();
     } else {

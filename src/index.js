@@ -1,9 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import 'antd/dist/antd.min.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "antd/dist/antd.min.css";
+import axios from "axios";
+axios.defaults.timeout = 10000;
+// axios.defaults.baseURL = "http://192.168.50.206:8887";
+axios.defaults.baseURL = "http://localhost:8887"
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <App />
