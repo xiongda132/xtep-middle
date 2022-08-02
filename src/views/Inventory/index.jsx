@@ -81,11 +81,11 @@ const Inventory = () => {
   };
 
   const delConfirm = async (id, cb) => {
-    const res = await axios.post(
-      "http://192.168.50.206:8887/goods/check/delete",
-      id
-    );
-    // const res = await axios.post('http://localhost:8887/goods/check/delete', id)
+    // const res = await axios.post(
+    //   "http://192.168.50.206:8887/goods/check/delete",
+    //   id
+    // );
+    const res = await axios.post('http://localhost:8887/goods/check/delete', id)
     if (res.status === 200) {
       message.success("删除用户成功");
       cb();
